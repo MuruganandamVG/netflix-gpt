@@ -28,19 +28,15 @@ const Login = () => {
   };
 
   const HandleButtonClick = () => {
-    console.log("Clicked for signup");
     const message = CheckValidateData(
       email.current.value,
       password.current.value
     );
     setErrorMessage(message);
 
-    console.log(message);
     if (message) return;
 
     // Sign up and Sign in logic
-    console.log(message);
-    console.log(IsSignInForm);
 
     if (!IsSignInForm) {
       createUserWithEmailAndPassword(
@@ -60,7 +56,6 @@ const Login = () => {
               // ...
               const { uid, email, displayName } = auth.currentUser;
               dispatch(addUser({ uid, email, displayName }));
-              navigate("/browse");
             })
             .catch((error) => {
               // An error occurred
@@ -68,7 +63,6 @@ const Login = () => {
               setErrorMessage(error.message);
             });
 
-          console.log(user);
           // ...
         })
         .catch((error) => {
@@ -87,7 +81,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           navigate("/browse");
-          console.log(user);
+
           // ...
         })
         .catch((error) => {

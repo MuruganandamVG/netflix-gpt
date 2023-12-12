@@ -7,9 +7,13 @@ import { useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { addUser, removeUser } from "../utils/userSlice";
-import { LOGO, USER } from "../utils/constants";
+import { LOGO, SUPPORTED_LANGUAGES, USER } from "../utils/constants";
+import { toggleGptSearchView } from "../utils/gptSlice";
+import { changeLanguage } from "../utils/configSlice";
 const Header = () => {
   const user = useSelector((state) => state.user);
+
+  const showGptSearch = useSelector((state) => state.gpt.showGptSearch);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,6 +25,14 @@ const Header = () => {
       .catch((error) => {
         // An error happened.
       });
+  };
+
+  const HandleChangeLanguage = (e) => {
+    dispatch(changeLanguage(e.target.value));
+  };
+
+  const HandleGptSearchClick = () => {
+    dispatch(toggleGptSearchView());
   };
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -46,8 +58,27 @@ const Header = () => {
       <img className="w-44" src={LOGO} alt="logo" />
 
       {user && (
-        <div className="flex w-28 justify-between align-middle ">
-          <img className=" mt-4 w-15 h-10 " src={USER} />
+        <div className="flex justify-between items-center ">
+          {showGptSearch && (
+            <select
+              className="px-2 m-2 h-10 bg-gray-700 text-white"
+              onChange={HandleChangeLanguage}
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.identifier} value={lang.identifier}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <button
+            className="bg-purple-700 my-4 mx-2  px-4 py-2 rounded-lg text-white"
+            onClick={HandleGptSearchClick}
+          >
+            {showGptSearch ? "Home Page" : "Gpt Search"}
+          </button>
+          <img className="  mr-2 w-15 h-10 " src={USER} />
           <button className="font-bold text-white" onClick={HandleSignOut}>
             Sign out
           </button>
